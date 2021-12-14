@@ -1,0 +1,42 @@
+Porta utilizzata 2009
+Finestra iniziale scelta difficoltà, una volta premuto il bottone richiede di inserire il destinatario con il quale si vuole giocare.
+Scelta del nickname, possibilità di scegliere il tempo per turno e il numero di tentativi. 
+	
+Inserisco l’IP del destinatario che dovrà accettare o rifiutare. In caso affermativo verrà mandato anche il nickname dell’altro partecipante.
+Mittente invia la richiesta:
+	C;nickname;tempoTurno;nTentativi;sceltaPedina
+Destinatario risponde:
+	Y;nicknameAvversario
+	N;
+Per la scelta del turno i due utenti posso scegliere tra due opzioni:
+Il creatore della partita perte per primo
+L'inizio viene sancito da una partita a sasso,carta,forbice.
+	X;scelta
+
+Una volta stabilita la connessione verrà generata in modo casuale la scelta della pedina da trovare o verrà scelta manualmente
+
+Lo sfidante dovrà mandare un messaggio per fare una domanda (è ammessa solo una domanda per turno).
+	D;messaggio
+Ogni volta che ricevuto un messaggio/tentetivo etc il destinatario dovrà controllare che l'indirizzo del mittente sia lo stesso di quello che ha stabilito la connessione per evitare influenze esterne.
+Nel caso in cui un terzo utente manda un richiesta di connessione, se già connesso verrà mandata automaticamente risposta di rifiuto della connessione
+	N;   
+Una volta fatta la domanda non sarà più permesso all’utente di mandare altri messaggi fino all’inizio del turno successivo.
+Il destinatario potrà rispondere alla domanda solo con un si o un no. Tramite un messaggio di risposta:
+    	M;Y
+	M;N
+Fino a quando non ha la risposta il mittente non può passare il turno.
+Una volta passato il turno il mittente manderà al destinatario il permesso di inviare messaggi o fare tentativi più una serie di stringhe con le coordinate dei personaggi eliminati dall'utente.
+	F;coordinate...
+All' inizio di ogni turno in caso di presenza del timer verrà resettato, una volta mandata la domanda il timer verrà bloccato per aspettare la risposta dell'avversario che a sua volta avrà un tempo limite 
+Il destinatario aggiornerà automaticamente la tabella con le relative eliminazioni fatte dall'avversario.
+
+Nel caso, uno dei due utenti durante il suo turno volesse tentare di indovinare il nome del personaggio selezionato, dovrà scrivere nella chat il nome del sospettato e premere il pulsante tenta.
+	T;nomeTentativo
+Nel caso in cui volesse arrendersi verrà inviato:
+	R; 
+Se il destinatario risponde si verrà data la vittoria all'avversario che automaticamente chiuderà la connessione, in caso negativo l'avversario dovrà tenere conto della risposta sbagliata decrementando il numero di tentativi disponibili.
+Il tentativo equivale all'invio di una domanda, non si può fare una domanda e un tentativo nello stesso turno.
+Nel caso uno dei due sfidanti dovesse finire i tentativi,arrendersi o indovinare il personaggio verrà inviata una disconnessione con relativa motivazione che sancirà la vittoria dello sfidante.
+	E;A (arrendersi)
+	E;T (tentativi finiti)
+	E;W (indovinato la persona)
