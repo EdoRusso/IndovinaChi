@@ -20,22 +20,26 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  *
  * @author Utente
  */
-public class FSchermataGioco extends JFrame {
+public class FSchermataGioco extends JFrame implements ActionListener {
 
     JButton bottone;
-    boolean paolo = true;
+    //boolean paolo = true;
     Condivisa cond;
+
     Image img;
     private JButton[] arrayBottoni;
-    Clicklistener click;
+    private JLabel[] arrayLabel;
+    // Clicklistener click;
 
     public FSchermataGioco() throws HeadlessException, IOException {
         cond = new Condivisa();
+        System.out.println("Dentro1");
         //this.setExtendedState(this.MAXIMIZED_BOTH);
         this.setSize(1920, 1080);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,89 +47,71 @@ public class FSchermataGioco extends JFrame {
         this.getContentPane().setBackground(c);
         this.setTitle("Finestra");
         this.setLayout(null);
-        click = new Clicklistener();
 
-//        bottone = new JButton();
-//        img = ImageIO.read(getClass().getResource("PersonaggiIndovinaChi/paolo.png"));
-//        img = resizeImage((BufferedImage) img, 1, 100, 125);
-//        bottone.setIcon(new ImageIcon(img));
-//        bottone.setBounds(100, 100, 100, 125);
-//        bottone.addActionListener(click);
-        //     this.add(bottone);
-        // this.setVisible(true);
+        //Vettore di bottoni
         arrayBottoni = new JButton[24];
-
-        //Vettore di persone
-        int posX = 1095;
+        //Vettore di label
+        arrayLabel = new JLabel[24];
+        //Posizione dei bottoni(local) e delle label(opponent)
+        int posXopponent = -25;
+        int posXlocal = 1095;
+        //posizione della y che è uguale per entrambi
         int posY = 100;
-
-        int y = 0;
+        //contatore per posizionare le label e bottoni
+        int cont = 0;
         for (int i = 0; i < arrayBottoni.length; i++) {
             arrayBottoni[i] = new JButton();
-            System.out.println("sono dentro");
-
-            if (y >= 6) {
-                posX = 1200;
+            arrayLabel[i] = new JLabel();
+            //System.out.println("sono dentro");
+            if (cont >= 6) {
+                posXlocal = 1200;
+                posXopponent = 80;
                 posY += 130;
-                y = 1;
+                cont = 1;
             } else {
-                posX += 105;
-                y++;
+                posXlocal += 105;
+                posXopponent += 105;
+                cont++;
             }
-
-            //arrayBottoni[i].setText(i + "");          
+            //arrayBottoni[i].setText(i + ""); 
+            //vado ad inserire nelle label le sagome
+            img = ImageIO.read(getClass().getResource("sagoma.png"));
+            img = cond.resizeImage((BufferedImage) img, 1, 100, 125);
+            arrayLabel[i].setIcon(new ImageIcon(img));
+            //bottone.setIcon(new ImageIcon(img));
+            arrayLabel[i].setBounds(posXopponent, posY, 100, 125);
+            this.add(arrayLabel[i]);
+            //vado a inserire nei bottoni le immagini delle persone 
             img = ImageIO.read(getClass().getResource(cond.persona[i].getPercorso()));
-            img = resizeImage((BufferedImage) img, 1, 100, 125);
+            img = cond.resizeImage((BufferedImage) img, 1, 100, 125);
             arrayBottoni[i].setIcon(new ImageIcon(img));
             //bottone.setIcon(new ImageIcon(img));
-            arrayBottoni[i].setBounds(posX, posY, 100, 125);
-
+            arrayBottoni[i].setBounds(posXlocal, posY, 100, 125);
             this.add(arrayBottoni[i]);
-            arrayBottoni[i].addActionListener(click);
+            arrayBottoni[i].addActionListener(this);
         }
-
+        System.out.println("Dentro2");
         //ultimo
         this.setVisible(true);
     }
 
-    private static BufferedImage resizeImage(BufferedImage originalImage, int type, Integer img_width, Integer img_height) {
-        BufferedImage resizedImage = new BufferedImage(img_width, img_height, type);
-        Graphics2D g = resizedImage.createGraphics();
-        g.drawImage(originalImage, 0, 0, img_width, img_height, null);
-        g.dispose();
-        return resizedImage;
-    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for (int i = 0; i < arrayBottoni.length; i++) {
+            //System.out.println("sono dentro pt2");
+            if (e.getSource() == arrayBottoni[i] && !cond.persona[i].isAttivo()) {
+                try {
+                    img = ImageIO.read(getClass().getResource("sagoma.png"));
+                    img = cond.resizeImage((BufferedImage) img, 1, 100, 125);
+                    arrayBottoni[i].setIcon(new ImageIcon(img));
+                    cond.persona[i].setAttivo(true);
+                    System.out.println(cond.persona[i].getNome());
 
-    private class Clicklistener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-//            if (e.getSource() == bottone && paolo) {
-//                System.out.println("Paolo");
-//                paolo = false;
-//
-//                    Image img;
-//                try {
-//                    img = ImageIO.read(getClass().getResource("sagoma.png"));
-//                    img = resizeImage((BufferedImage) img, 1, 100, 125);
-//                    bottone.setIcon(new ImageIcon(img));
-//                } catch (IOException ex) {
-//                    java.util.logging.Logger.getLogger(FSchermataGioco.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//                }
-            for (int i = 0; i < arrayBottoni.length; i++) {
-                System.out.println("sono dentro pt2");
-                if (e.getSource() == arrayBottoni[i] && !cond.persona[i].isAttivo()) {
-                    try {
-                        img = ImageIO.read(getClass().getResource("sagoma.png"));
-                        img = resizeImage((BufferedImage) img, 1, 100, 125);
-                        arrayBottoni[i].setIcon(new ImageIcon(img));
-                        cond.persona[i].setAttivo(true);
-                    } catch (IOException ex) {
-                        Logger.getLogger(FSchermataGioco.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(FSchermataGioco.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println(e.getSource());
         }
-
+        //System.out.println(e.getSource());    }
     }
 }
