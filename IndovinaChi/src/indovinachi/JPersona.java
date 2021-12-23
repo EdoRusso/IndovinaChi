@@ -11,7 +11,7 @@ package indovinachi;
  */
 public class JPersona {
 
-    private String nome;
+    private final String nome;
     private String percorso;
     private boolean attivo;
 

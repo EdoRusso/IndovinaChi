@@ -5,85 +5,128 @@
  */
 package indovinachi;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  *
  * @author Utente
  */
-public class FMenu extends JFrame implements ActionListener {
+public class FMenu extends JFrame {
 
     Condivisa cond;
     FSchermataGioco fGioco;
-    private JButton gioca;
-    private JButton impostazioni;
-    private JButton esci;
+    FImpostazioni fImpostazioni;
+    private final JLabel gioca;
+    private final JLabel impostazioni;
+    private final JLabel esci;
+    private Image img;
 
-    public static void main(String[] args) throws HeadlessException, IOException {
-        new FMenu();
+    public FMenu(Condivisa cond) throws HeadlessException, IOException {
+        this.cond = cond;
+        //this.setUndecorated(true);
+        // x-> 1936 y-> 1056
+        //Label 600 200
+        // Bottone dimensione 100 125
+        // 19.36 8.448      
 
-    }
-
-    public FMenu() throws HeadlessException, IOException {
-        cond = new Condivisa();
-        this.setSize(1920, 1080);
+        this.setTitle("Menu - Indovina Chi");
+        //Elimina i bordi
+        setUndecorated(true);
+        //Imposto la finestra al massimo
+        setExtendedState(this.MAXIMIZED_BOTH);
+        //Se clicco la X si chiuderà automaticamente il programma
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("Finestra");
+
+        //Colore di sfondo
+        Color c = new Color(208, 230, 255);
+        this.getContentPane().setBackground(c);
+
         this.setLayout(null);
 
-        gioca = new JButton();
-        impostazioni = new JButton();
-        esci = new JButton();
-        gioca.setBounds(100, 100, 100, 125);
-        gioca.setText("Gioco");
+        //Imposto la finestra non ridimensionabile
+        this.setMinimumSize(new Dimension(cond.getWidth(), cond.getHeight()));
+        System.out.println("Frame Size = " + this.getSize());
 
-        impostazioni.setBounds(200, 100, 100, 125);
-        impostazioni.setText("Impostazioni");
-
-        esci.setBounds(300, 100, 100, 125);
-        esci.setText("Esci");
-        //Clicklistener click = new Clicklistener();
-        gioca.addActionListener(this);
-        impostazioni.addActionListener(this);
-        esci.addActionListener(this);
-        //Image img = ImageIO.read(getClass().getResource("paolo.png"));
-        //img = resizeImage((BufferedImage) img, 1, 100, 125);
-        //bottone.setIcon(new ImageIcon(img));
-        //bottone.setText("C");
+        //Label creazione gioca
+        gioca = new JLabel();
+        gioca.setBounds(650, 100, 600, 200);
+        img = ImageIO.read(getClass().getResource("Bottoni/play.png"));
+        //img = cond.resizeImage((BufferedImage) img, 1, 600, 200);
+        gioca.setIcon(new ImageIcon(img));
         this.add(gioca);
+        gioca.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                System.out.println("true");
+                try {
+                    fGioco = new FSchermataGioco(cond);
+                    fGioco.setVisible(true);
+                    cond.getMenu().setVisible(false);
+
+                } catch (HeadlessException | IOException ex) {
+                    Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("E dai");
+            }
+        });
+
+        //Label creazione impostazioni
+        impostazioni = new JLabel();
+        impostazioni.setBounds(650, 350, 600, 200);
+        img = ImageIO.read(getClass().getResource("Bottoni/settings.png"));
+        // img = cond.resizeImage((BufferedImage) img, 1, 600, 200);
+        impostazioni.setIcon(new ImageIcon(img));
         this.add(impostazioni);
+        impostazioni.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                System.out.println("true");
+
+                try {
+                    fImpostazioni = new FImpostazioni(cond);
+                    fImpostazioni.setVisible(true);
+                    cond.getMenu().setVisible(false);
+                } catch (HeadlessException | IOException ex) {
+                    Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                System.out.println("E dai");
+            }
+        });
+        //Label creazione esci
+        esci = new JLabel();
+        esci.setBounds(650, 600, 600, 200);
+        img = ImageIO.read(getClass().getResource("Bottoni/exit.png"));
+        //img = cond.resizeImage((BufferedImage) img, 1, 600, 200);
+        esci.setIcon(new ImageIcon(img));
         this.add(esci);
+        esci.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                System.exit(0);
+                System.out.println("E dai");
+
+            }
+        });
+
         this.setVisible(true);
 
-    }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == gioca) {
-            System.out.println("No");
-            //cond.getGioco().setVisible(true);
-            
-            try {
-                fGioco = new FSchermataGioco();
-                fGioco.setVisible(true);
-            } catch (HeadlessException ex) {
-                Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            this.setVisible(false);
-
-        }else if(e.getSource() == impostazioni){
-        }else if(e.getSource() == esci){
-            System.exit(0);
-        }
     }
 
 }
