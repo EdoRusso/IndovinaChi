@@ -34,13 +34,16 @@ public class FMenu extends JFrame {
     private Image img;
 
     public FMenu(Condivisa cond) throws HeadlessException, IOException {
-        this.cond = cond;
+        this.cond = cond;     
+       fImpostazioni = new FImpostazioni(cond);
+                
+        //cond.setImpostazioni(fImpostazioni);
+
         //this.setUndecorated(true);
         // x-> 1936 y-> 1056
         //Label 600 200
         // Bottone dimensione 100 125
         // 19.36 8.448      
-
         this.setTitle("Menu - Indovina Chi");
         //Elimina i bordi
         setUndecorated(true);
@@ -97,10 +100,16 @@ public class FMenu extends JFrame {
                 System.out.println("true");
 
                 try {
-                    fImpostazioni = new FImpostazioni(cond);
-                    fImpostazioni.setVisible(true);
-                    cond.getMenu().setVisible(false);
-                } catch (HeadlessException | IOException ex) {
+                    
+                    //fImpostazioni = new FImpostazioni(cond);
+                    
+                    if (!fImpostazioni.isVisible() == true) {
+                       fImpostazioni.setVisible(true);
+                        System.out.println("fImpostazioni " + fImpostazioni.isVisible());
+                    }
+
+                    //cond.getMenu().setVisible(false);
+                } catch (HeadlessException ex) {
                     Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -125,7 +134,6 @@ public class FMenu extends JFrame {
         });
 
         this.setVisible(true);
-
 
     }
 
