@@ -33,7 +33,6 @@ public class FStart extends JFrame {
     private int height;
 
     public static void main(String[] args) throws HeadlessException, IOException {
-        cond = new Condivisa();
 
         FStart fStart = new FStart();
     }
@@ -41,6 +40,8 @@ public class FStart extends JFrame {
     public FStart() throws HeadlessException, IOException {
         cond = new Condivisa();
         cond.setStart(this);
+        System.out.println("FStart: Dentro start");
+
         this.setTitle("Start - Indovina chi");
 
         //Elimina i bordi
@@ -53,12 +54,12 @@ public class FStart extends JFrame {
         //Colore di sfondo
         Color c = new Color(0, 0, 0);
         this.getContentPane().setBackground(c);
-        
+
         this.setLayout(null);
 
         //Imposto la finestra non ridimensionabile
         this.setMinimumSize(new Dimension(width, height));
-        System.out.println("Frame Size = " + this.getSize());
+        System.out.println("FStart: Frame Size = " + this.getSize());
 
         //Dati relativi alla lunghezza e larghezza dello schermo
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -75,7 +76,6 @@ public class FStart extends JFrame {
         //LabelIcon (x/2)-450(y/2)-440 circa
         logoIndovinaChi.setBounds((width / 2) - 450, (height / 2) - 440, 900, 845);
 
-
         img = ImageIO.read(getClass().getResource("Bottoni/icona.png"));
         logoIndovinaChi.setIcon(new ImageIcon(img));
         this.add(logoIndovinaChi);
@@ -84,21 +84,23 @@ public class FStart extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                System.out.println("true");
+                System.out.println("FStart: true");
                 try {
-                     menu = new FMenu(cond);
-                     cond.setMenu(menu);
-                     menu.setVisible(true);
-                     cond.getStart().setVisible(false);
+                    cond.leggiFile();
+                    menu = new FMenu(cond);
+                    cond.setMenu(menu);
+                    menu.setVisible(true);              
+                    cond.getStart().setVisible(false);
                 } catch (HeadlessException | IOException ex) {
                     Logger.getLogger(FStart.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                   
+
             }
         });
 
-      this.setVisible(true);
+        this.setVisible(true);
 
     }
-      
+
+
 }

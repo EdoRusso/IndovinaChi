@@ -14,12 +14,13 @@ public class JPersona {
     private final String nome;
     private String percorso;
     private boolean attivo;
+    private boolean eliminato;
 
     public JPersona(String nome, String percorso) {
         this.nome = nome;
         this.percorso = percorso;
         this.attivo = false;
-
+        this.eliminato = false;
     }
 
     public void setAttivo(boolean attivo) {
@@ -40,6 +41,14 @@ public class JPersona {
 
     public boolean isAttivo() {
         return attivo;
+    }
+
+    public boolean isEliminato() {
+        return eliminato;
+    }
+
+    public void setEliminato(boolean eliminato) {
+        this.eliminato = eliminato;
     }
 
 }

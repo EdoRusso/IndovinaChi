@@ -5,10 +5,15 @@
  */
 package indovinachi;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -21,17 +26,20 @@ public class Condivisa {
     public String[] avversario;
     public int Width;
     public int Height;
-    
+
     public FImpostazioni impostazioni;
     public FMenu menu;
     public FSchermataGioco gioco;
     public FStart start;
 
+    public Color c;
 
-    //FMenu menu;
-    //FSchermataGioco gioco;
+    public int tempo;
+    public int tentativi;
+    public String nomeUtente;
+    
     public Condivisa() throws HeadlessException, IOException {
-      
+        System.out.println("Condivisa: dentro condivisa");
         Width = 0;
         Height = 0;
         persona = new JPersona[24];
@@ -98,7 +106,6 @@ public class Condivisa {
         return resizedImage;
     }
 
-
     public FImpostazioni getImpostazioni() {
         return impostazioni;
     }
@@ -129,6 +136,69 @@ public class Condivisa {
 
     public void setStart(FStart start) {
         this.start = start;
-    } 
+    }
+
+    public Color getColore() {
+        return c;
+    }
+
+    public void setColore(Color c) {
+        this.c = c;
+    }
+
+    public void caricaFile(String file) throws IOException {
+
+        FileWriter myWriter = new FileWriter("fileImpostazioni.txt");
+        myWriter.write(file);
+        myWriter.close();
+        System.out.println("Condivisa: FileScritto");
+    }
+
+    public void leggiFile() throws FileNotFoundException, IOException {
+        System.out.println("Condivisa: Dentro leggiFile");
+        BufferedReader reader;
+        reader = new BufferedReader(new FileReader("fileImpostazioni.txt"));
+        String line = reader.readLine();
+        System.out.println("c-> " + line + "\n");
+        // read next line
+        //line = reader.readLine();
+        String[] split = line.split(";");
+        System.out.println("R " + split[0]+" "+Integer.parseInt(split[0]));
+        System.out.println("G " + split[1]+" "+Integer.parseInt(split[1]));
+        System.out.println("B " + split[2]+" "+Integer.parseInt(split[2]));
+        
+        Color colore = new Color(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+        setColore(colore);
+        
+        setNomeUtente(split[3]);
+        setTempo(Integer.parseInt(split[4]));
+        setTentativi(Integer.parseInt(split[5]));
+        
+        reader.close();
+    }
+
+    public int getTempo() {
+        return tempo;
+    }
+
+    public int getTentativi() {
+        return tentativi;
+    }
+
+    public String getNomeUtente() {
+        return nomeUtente;
+    }
+
+    public void setTempo(int tempo) {
+        this.tempo = tempo;
+    }
+
+    public void setTentativi(int tentativi) {
+        this.tentativi = tentativi;
+    }
+
+    public void setNomeUtente(String nomeUtente) {
+        this.nomeUtente = nomeUtente;
+    }
 
 }

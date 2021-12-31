@@ -5,6 +5,11 @@
  */
 package indovinachi;
 
+import static indovinachi.FImpostazioni.sliderB;
+import static indovinachi.FImpostazioni.sliderG;
+import static indovinachi.FImpostazioni.sliderR;
+import static indovinachi.FImpostazioni.sliderTemp;
+import static indovinachi.FImpostazioni.sliderTent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -18,6 +23,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
 
 /**
  *
@@ -32,18 +39,24 @@ public class FMenu extends JFrame {
     private final JLabel impostazioni;
     private final JLabel esci;
     private Image img;
+    private JLabel labelLogo;
 
     public FMenu(Condivisa cond) throws HeadlessException, IOException {
-        this.cond = cond;     
-       fImpostazioni = new FImpostazioni(cond);
-                
-        //cond.setImpostazioni(fImpostazioni);
+        System.out.println("FMenu: Dentro al menu");
 
-        //this.setUndecorated(true);
+        this.cond = cond;
+
+        fImpostazioni = new FImpostazioni(cond);
+        cond.setMenu(this);
+
         // x-> 1936 y-> 1056
-        //Label 600 200
+        //Label Lx->600 Ly->200
         // Bottone dimensione 100 125
-        // 19.36 8.448      
+        //Pos Label
+        //x/2-Lx/2 
+        //LPy1=300 -> 1056/300->3.52
+        //LPy2=500 -> 1056/500->2.112
+        //LPy3=700 -> 1056/700->1.508
         this.setTitle("Menu - Indovina Chi");
         //Elimina i bordi
         setUndecorated(true);
@@ -52,19 +65,20 @@ public class FMenu extends JFrame {
         //Se clicco la X si chiuderà automaticamente il programma
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Colore di sfondo
-        Color c = new Color(208, 230, 255);
+        //Colore di sfondo        
+        Color c = cond.getColore();
         this.getContentPane().setBackground(c);
 
         this.setLayout(null);
 
         //Imposto la finestra non ridimensionabile
         this.setMinimumSize(new Dimension(cond.getWidth(), cond.getHeight()));
-        System.out.println("Frame Size = " + this.getSize());
 
         //Label creazione gioca
         gioca = new JLabel();
-        gioca.setBounds(650, 100, 600, 200);
+
+        gioca.setBounds((cond.getWidth() / 2) - 300, (int) (cond.getHeight() / 3.52), 600, 200);
+        //gioca.setHorizontalAlignment(gioca.CENTER);
         img = ImageIO.read(getClass().getResource("Bottoni/play.png"));
         //img = cond.resizeImage((BufferedImage) img, 1, 600, 200);
         gioca.setIcon(new ImageIcon(img));
@@ -73,22 +87,22 @@ public class FMenu extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                System.out.println("true");
+                System.out.println("FMenu: Gioca");
                 try {
+
                     fGioco = new FSchermataGioco(cond);
                     fGioco.setVisible(true);
                     cond.getMenu().setVisible(false);
-
                 } catch (HeadlessException | IOException ex) {
                     Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("E dai");
+                System.out.println("FMenu: E dai");
             }
         });
 
         //Label creazione impostazioni
         impostazioni = new JLabel();
-        impostazioni.setBounds(650, 350, 600, 200);
+        impostazioni.setBounds((cond.getWidth() / 2) - 300, (int) (cond.getHeight() / 2.112), 600, 200);
         img = ImageIO.read(getClass().getResource("Bottoni/settings.png"));
         // img = cond.resizeImage((BufferedImage) img, 1, 600, 200);
         impostazioni.setIcon(new ImageIcon(img));
@@ -97,14 +111,13 @@ public class FMenu extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                System.out.println("true");
+                System.out.println("FMenu: Impostazioni");
 
                 try {
-                    
                     //fImpostazioni = new FImpostazioni(cond);
-                    
-                    if (!fImpostazioni.isVisible() == true) {
-                       fImpostazioni.setVisible(true);
+
+                    if (!fImpostazioni.isVisible()) {
+                        fImpostazioni.setVisible(true);
                         System.out.println("fImpostazioni " + fImpostazioni.isVisible());
                     }
 
@@ -118,7 +131,7 @@ public class FMenu extends JFrame {
         });
         //Label creazione esci
         esci = new JLabel();
-        esci.setBounds(650, 600, 600, 200);
+        esci.setBounds((cond.getWidth() / 2) - 300, (int) (cond.getHeight() / 1.508), 600, 200);
         img = ImageIO.read(getClass().getResource("Bottoni/exit.png"));
         //img = cond.resizeImage((BufferedImage) img, 1, 600, 200);
         esci.setIcon(new ImageIcon(img));
@@ -132,7 +145,11 @@ public class FMenu extends JFrame {
 
             }
         });
-
+        labelLogo = new JLabel();
+        labelLogo.setBounds((cond.getWidth() / 2) - 150, (int) (cond.getHeight() / 100), 300, 300);
+        img = ImageIO.read(getClass().getResource("Bottoni/LogoIndovinaChi.png"));
+        labelLogo.setIcon(new ImageIcon(img));
+        this.add(labelLogo);
         this.setVisible(true);
 
     }
