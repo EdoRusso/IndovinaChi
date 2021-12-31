@@ -15,10 +15,13 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.*;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -37,7 +40,16 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
     JButton tenta;
     JButton arrenditi;
     JButton passaTurno;
+    JButton inviaMessaggio;
     boolean passaTurnoAvversario;
+    
+    JLabel nomeAvversario;
+    JLabel nomeUtente;
+    JLabel nTentativiUtente;
+    JLabel nTentativiAvversario;
+    
+    JTextArea chat;
+    JTextPane messaggio;
 
     public FSchermataGioco(Condivisa cond) throws HeadlessException, IOException {
         this.cond = cond;
@@ -76,6 +88,36 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         tenta.setBounds((cond.getWidth() / 2) + 300, 750, 200, 100);
         this.add(tenta);
         tenta.addActionListener(this);
+                //label nTentativi avversario
+        nTentativiAvversario=new JLabel("prova");
+        nTentativiAvversario.setBounds(200, 30, 100, 20);
+        this.add(nTentativiAvversario);
+        //label nTentativi utente
+        nTentativiUtente=new JLabel("prova utente");
+        nTentativiUtente.setBounds(1200, 30, 100, 20);
+        this.add(nTentativiUtente);
+        //label nome Avversario
+        nomeUtente= new JLabel(cond.getNomeUtente());
+        nomeUtente.setBounds(1200, 400, 100, 20);
+        this.add(nomeUtente);
+        //label nome avversario
+        nomeAvversario=new JLabel("avversario");
+        nomeAvversario.setBounds(200, 400, 100, 20);
+        this.add(nomeAvversario);
+        //bottone invia messaggio
+        inviaMessaggio=new JButton("invia ");
+        inviaMessaggio.setBounds(700, 550, 100, 40);
+        this.add(inviaMessaggio);
+        //textarea per chat
+        chat=new JTextArea();
+        chat.setBounds(500, 40, 300, 500);
+        chat.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.red));
+        this.add(chat);
+        //textpane per il messaggio
+        messaggio=new JTextPane();
+        messaggio.setBounds(500, 550, 200, 40);
+        messaggio.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.red));
+        this.add(messaggio);
         //Vettore di bottoni
         arrayBottoni = new JButton[24];
         //Vettore di label
