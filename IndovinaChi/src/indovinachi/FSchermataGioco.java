@@ -5,7 +5,9 @@
  */
 package indovinachi;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -32,7 +34,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
     JButton bottone;
     Condivisa cond;
     //Btn 100x125
-
+    String personaggioScelto;
     Image img;
     private JButton[] arrayBottoni;
     private JLabel[] arrayLabel;
@@ -42,16 +44,20 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
     JButton passaTurno;
     JButton inviaMessaggio;
     boolean passaTurnoAvversario;
-    
+
     JLabel nomeAvversario;
     JLabel nomeUtente;
     JLabel nTentativiUtente;
     JLabel nTentativiAvversario;
-    
+
     JTextArea chat;
     JTextPane messaggio;
+    JLabel personaggio;
+    int tentativi;
+    int tentativiAvversario;
 
     public FSchermataGioco(Condivisa cond) throws HeadlessException, IOException {
+        tentativi = cond.getTentativi();
         this.cond = cond;
         passaTurnoAvversario = true;
         cond.setGioco(this);
@@ -70,68 +76,115 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         this.getContentPane().setBackground(c);
 
         this.setLayout(null);
+
+        //Label personaggio scelto
+        int random = (int) (Math.random() * 24);
+        System.out.println("FSchermataGioco: " + random);
+        personaggio = new JLabel();
+        img = ImageIO.read(getClass().getResource(cond.persona[random].getPercorso()));
+        img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
+        personaggio.setIcon(new ImageIcon(img));
+        //personaggio.setBounds((int) (cond.getWidth() / 2) - (int) (cond.getWidth() / 19.36) / 2, ((int) (cond.getHeight() / 1.47)) + 100, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
+        personaggio.setBounds((int) (cond.getWidth() / 2) - (int) (cond.getWidth() / 19.36) / 2, (int) (cond.getHeight() / 42.24) - 5, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
+        personaggio.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+
+        this.add(personaggio);
+
         //Bottone passaTurno
-        passaTurno = new JButton("passaTurno");
+        passaTurno = new JButton();
+        img = ImageIO.read(getClass().getResource("Bottoni/round.jpg"));
+        img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
+        passaTurno.setIcon(new ImageIcon(img));
         //passaTurno.setBounds((cond.getWidth()/2)-(int)((cond.getWidth()/19.36)), 600, 50, 300);
-        passaTurno.setBounds((cond.getWidth() / 2) - 100, 750, 200, 100);
+        passaTurno.setBounds((cond.getWidth() / 2) - (int) (cond.getWidth() / 9.68) / 2, (int) (cond.getHeight() / 1.32), (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
         this.add(passaTurno);
         passaTurno.addActionListener(this);
+
         //Bottone arrenditi
-        arrenditi = new JButton("arrenditi");
+        arrenditi = new JButton();
+        img = ImageIO.read(getClass().getResource("Bottoni/quit.jpg"));
+        img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
+        arrenditi.setIcon(new ImageIcon(img));
         //passaTurno.setBounds((cond.getWidth()/2)-(int)((cond.getWidth()/19.36)), 600, 50, 300);
-        arrenditi.setBounds((cond.getWidth() / 2) - 500, 750, 200, 100);
+        //arrenditi.setBounds((cond.getWidth() / 2) - 500, 750, (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
+        arrenditi.setBounds((int) (cond.getWidth() / 5.3) - ((int) (cond.getWidth() / 9.68) / 2), (int) (cond.getHeight() / 1.32), (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
         this.add(arrenditi);
         arrenditi.addActionListener(this);
+
         //Bottone tenta
-        tenta = new JButton("tenta");
+        tenta = new JButton();
         //passaTurno.setBounds((cond.getWidth()/2)-(int)((cond.getWidth()/19.36)), 600, 50, 300);
-        tenta.setBounds((cond.getWidth() / 2) + 300, 750, 200, 100);
+        //tenta.setBounds((cond.getWidth() / 2) + 300, 750, (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
+        tenta.setBounds((int) (cond.getWidth() / 1.232) - (int) (cond.getWidth() / 9.68) / 2, (int) (cond.getHeight() / 1.32), (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
+        img = ImageIO.read(getClass().getResource("Bottoni/try.jpg"));
+        img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 9.68), (int) (cond.getHeight() / 10.56));
+        tenta.setIcon(new ImageIcon(img));
         this.add(tenta);
         tenta.addActionListener(this);
-                //label nTentativi avversario
-        nTentativiAvversario=new JLabel("prova");
-        nTentativiAvversario.setBounds(200, 30, 100, 20);
-        this.add(nTentativiAvversario);
-        //label nTentativi utente
-        nTentativiUtente=new JLabel("prova utente");
-        nTentativiUtente.setBounds(1200, 30, 100, 20);
-        this.add(nTentativiUtente);
-        //label nome Avversario
-        nomeUtente= new JLabel(cond.getNomeUtente());
-        nomeUtente.setBounds(1200, 400, 100, 20);
+        if (cond.getTentativi() > 0) {
+            //label nTentativi avversario
+            nTentativiAvversario = new JLabel(tentativiAvversario + "/" + cond.getTentativi());
+            nTentativiAvversario.setFont(new Font("Bungee Regular", Font.BOLD, 36));
+            nTentativiAvversario.setBounds((int) (cond.getWidth() / 38.72), (int) (cond.getHeight() / 10.56), 50, 30);
+            this.add(nTentativiAvversario);
+
+            //label nTentativi utente
+            nTentativiUtente = new JLabel(tentativi + "/" + cond.getTentativi());
+            nTentativiUtente.setFont(new Font("Bungee Regular", Font.BOLD, 36));
+            nTentativiUtente.setBounds((int) (cond.getWidth() / 1.054), (int) (cond.getHeight() / 10.56), 50, 30);
+            this.add(nTentativiUtente);
+        }
+
+        //label nome utente
+        String utente = cond.getNomeUtente();
+        nomeUtente = new JLabel();
+        nomeUtente.setText(utente);
+        nomeUtente.setHorizontalAlignment(nomeUtente.CENTER);
+        nomeUtente.setBounds((int) (cond.getWidth() / 1.417), (int) (cond.getHeight() / 10.56), 415, 30);
+        nomeUtente.setFont(new Font("Bungee Regular", Font.BOLD, 24));
         this.add(nomeUtente);
+
         //label nome avversario
-        nomeAvversario=new JLabel("avversario");
-        nomeAvversario.setBounds(200, 400, 100, 20);
+        nomeAvversario = new JLabel("avversario");
+        nomeAvversario.setHorizontalAlignment(nomeAvversario.CENTER);
+        nomeAvversario.setBounds((int) (cond.getWidth() / 12.49), (int) (cond.getHeight() / 10.56), 415, 30);
+        nomeAvversario.setFont(new Font("Bungee Regular", Font.BOLD, 24));
         this.add(nomeAvversario);
+
         //bottone invia messaggio
-        inviaMessaggio=new JButton("invia ");
-        inviaMessaggio.setBounds(700, 550, 100, 40);
+        inviaMessaggio = new JButton("invia");
+        inviaMessaggio.setBounds((int) (cond.getWidth() / 1.76), (int) (cond.getHeight() / 1.552), (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 21.12));
         this.add(inviaMessaggio);
+        inviaMessaggio.addActionListener(this);
+
         //textarea per chat
-        chat=new JTextArea();
-        chat.setBounds(500, 40, 300, 500);
-        chat.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.red));
+        chat = new JTextArea();
+        chat.setBounds((int) (cond.getWidth() / 2.688), (int) (cond.getHeight() / 7.04), (int) (cond.getWidth() / 4.033), (int) (cond.getHeight() / 2.011));
+        chat.setFont(new Font("Bungee Regular", Font.BOLD, 12));
+        chat.setEditable(false);
+        chat.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
         this.add(chat);
+
         //textpane per il messaggio
-        messaggio=new JTextPane();
-        messaggio.setBounds(500, 550, 200, 40);
-        messaggio.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.red));
+        messaggio = new JTextPane();
+        messaggio.setBounds((int) (cond.getWidth() / 2.688), (int) (cond.getHeight() / 1.552), (int) (cond.getWidth() / 5.531), (int) (cond.getHeight() / 21.12));
+        messaggio.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
+        messaggio.setFont(new Font("Bungee Regular", Font.BOLD, 16));
         this.add(messaggio);
+
         //Vettore di bottoni
         arrayBottoni = new JButton[24];
         //Vettore di label
         arrayLabel = new JLabel[24];
 
         //Posizione dei bottoni(local) e delle label(opponent)
-        //50
+        //Distanza da sinistra 50
         int posXopponent = (int) (cond.getHeight() / 21.12);
         //1936-675
         int posXlocal = (int) (cond.getWidth() - (cond.getWidth() / 2.868));
         //posizione della y che è uguale per entrambi
-        //150
-        int posY = (int) (cond.getHeight() / 21.12);
-
+        //Distanza dall'alto 150       
+        int posY = (int) (cond.getHeight() / 7.04);
         //contatore per posizionare le label e bottoni
         int cont = 1;
         for (int i = 0; i < arrayBottoni.length; i++) {
@@ -170,10 +223,9 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         img = ImageIO.read(getClass().getResource("Bottoni/sagoma.png"));
         img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         arrayLabel[i].setIcon(new ImageIcon(img));
-        //bottone.setIcon(new ImageIcon(img));
         arrayLabel[i].setBounds(posXopponent, posY, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         this.add(arrayLabel[i]);
-        //vado a inserire nei bottoni le immagini delle persone 
+        //vado ad inserire nei bottoni le immagini delle persone 
         img = ImageIO.read(getClass().getResource(cond.persona[i].getPercorso()));
         img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         arrayBottoni[i].setIcon(new ImageIcon(img));
@@ -210,10 +262,27 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
                 }
             } else if (e.getSource() == arrenditi) {
                 System.out.println("FSchermataGioco: Arrenditi");
+                this.dispose();
+                cond.getMenu().setVisible(true);
+                cond.setInizio();
+
                 //invia("e;r;")
             } else if (e.getSource() == tenta) {
                 System.out.println("FSchermataGioco: Tenta");
-                //invia("t;"+labelMessaggio.getText()+";");
+                if (tentativi> 0) {
+                    tentativi--;
+                    nTentativiUtente.setText(tentativi + "/" + cond.getTentativi());
+                }else if(tentativi==0 && !(cond.getTentativi()==0)){
+                //invia();
+                    System.out.println("FShcermataGioco: tenativi finiti");
+                }
+                //invia("t;"+messaggio.getText()+";");
+                //messaggio.setText("");
+                //messaggioBool=true;
+            } else if (e.getSource() == inviaMessaggio) {
+                chat.append("<" + cond.getNomeUtente() + "> " + messaggio.getText() + "\n");
+                messaggio.setText("");
+                //messaggioBool=true;
             } else {
                 for (int i = 0; i < arrayBottoni.length; i++) {
 

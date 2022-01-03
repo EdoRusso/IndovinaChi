@@ -200,5 +200,11 @@ public class Condivisa {
     public void setNomeUtente(String nomeUtente) {
         this.nomeUtente = nomeUtente;
     }
+    public void setInizio(){
+        for (int i = 0; i < persona.length; i++) {
+            persona[i].setAttivo(false);
+            persona[i].setEliminato(false);
+        }
+    }
 
 }

@@ -133,6 +133,9 @@ public class FImpostazioni extends JFrame implements ChangeListener {
                 System.out.println("FImpostazioni: btnConfermaPremuto");
 
                 cond.setColore(c);
+                cond.setNomeUtente(btn.getText());
+                cond.setTempo(sliderTemp.getValue());
+                cond.setTentativi(sliderTent.getValue());
                 cond.getMenu().getContentPane().setBackground(c);
 
                 String CSV = sliderR.getValue() + ";" + sliderG.getValue() + ";" + sliderB.getValue() + ";" + btn.getText() + ";" + sliderTemp.getValue() + ";" + sliderTent.getValue() + ";";

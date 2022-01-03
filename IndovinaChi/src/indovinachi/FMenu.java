@@ -93,6 +93,7 @@ public class FMenu extends JFrame {
                     fGioco = new FSchermataGioco(cond);
                     fGioco.setVisible(true);
                     cond.getMenu().setVisible(false);
+                    
                 } catch (HeadlessException | IOException ex) {
                     Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -114,10 +115,9 @@ public class FMenu extends JFrame {
                 System.out.println("FMenu: Impostazioni");
 
                 try {
-                    //fImpostazioni = new FImpostazioni(cond);
 
                     if (!fImpostazioni.isVisible()) {
-                        fImpostazioni.setVisible(true);
+                        fImpostazioni.setVisible(true);                      
                         System.out.println("fImpostazioni " + fImpostazioni.isVisible());
                     }
 
@@ -153,5 +153,4 @@ public class FMenu extends JFrame {
         this.setVisible(true);
 
     }
-
 }
