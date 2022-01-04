@@ -43,8 +43,9 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
     JButton arrenditi;
     JButton passaTurno;
     JButton inviaMessaggio;
-    boolean passaTurnoAvversario;
-
+    boolean turno;
+    String nomePersonaggioUtente;
+    
     JLabel nomeAvversario;
     JLabel nomeUtente;
     JLabel nTentativiUtente;
@@ -59,7 +60,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
     public FSchermataGioco(Condivisa cond) throws HeadlessException, IOException {
         tentativi = cond.getTentativi();
         this.cond = cond;
-        passaTurnoAvversario = true;
+        turno = true;
         cond.setGioco(this);
         System.out.println("FSchermataGioco: Dentro gioco");
         this.setTitle("Gioco - Indovina chi");
@@ -87,9 +88,11 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         //personaggio.setBounds((int) (cond.getWidth() / 2) - (int) (cond.getWidth() / 19.36) / 2, ((int) (cond.getHeight() / 1.47)) + 100, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         personaggio.setBounds((int) (cond.getWidth() / 2) - (int) (cond.getWidth() / 19.36) / 2, (int) (cond.getHeight() / 42.24) - 5, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         personaggio.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
-
+        nomePersonaggioUtente=cond.persona[random].getNome();
         this.add(personaggio);
-
+        
+        
+        
         //Bottone passaTurno
         passaTurno = new JButton();
         img = ImageIO.read(getClass().getResource("Bottoni/round.jpg"));
@@ -233,14 +236,14 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         this.add(arrayBottoni[i]);
         arrayBottoni[i].addActionListener(this);
     }
-
+   
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("FSchermata:------------------------------------------" + passaTurnoAvversario);
-        if (passaTurnoAvversario) {
+        System.out.println("FSchermata:------------------------------------------" + turno);
+        if (turno) {
             if (e.getSource() == passaTurno) {
                 System.out.println("FSchermataGioco: Passa Turno");
-                passaTurnoAvversario = false;
+                turno = false;
                 for (int i = 0; i < arrayBottoni.length; i++) {
                     if (cond.persona[i].isAttivo()) {
                         {
@@ -320,4 +323,19 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
 
         }
     }
+     public void setTurno(){
+        this.turno=!turno;
+    }
+    public void setPedinaAvversario(int i) throws IOException{
+        img = ImageIO.read(getClass().getResource("Bottoni/sagomaX.png"));
+        img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
+        arrayLabel[i].setIcon(new ImageIcon(img));
+    }
+    public String getNomePersonaggio(){
+        return nomePersonaggioUtente;
+    }
+    public void setTentativiAvversario(){
+        tentativiAvversario--;
+    }
+    
 }

@@ -31,7 +31,7 @@ public class Condivisa {
     public FMenu menu;
     public FSchermataGioco gioco;
     public FStart start;
-
+    public InviaRiceviThread inviaRicevi;
     public Color c;
 
     public int tempo;
@@ -97,6 +97,7 @@ public class Condivisa {
         avversario[indice] = "Bottoni/sagomaX.png";
 
     }
+    
 
     public static BufferedImage resizeImage(BufferedImage originalImage, int type, Integer img_width, Integer img_height) {
         BufferedImage resizedImage = new BufferedImage(img_width, img_height, type);
@@ -130,6 +131,14 @@ public class Condivisa {
         this.menu = menu;
     }
 
+    public InviaRiceviThread getInviaRicevi() {
+        return inviaRicevi;
+    }
+
+    public void setInviaRicevi(InviaRiceviThread inviaRicevi) {
+        this.inviaRicevi = inviaRicevi;
+    }
+    
     public void setGioco(FSchermataGioco gioco) {
         this.gioco = gioco;
     }
@@ -145,7 +154,7 @@ public class Condivisa {
     public void setColore(Color c) {
         this.c = c;
     }
-
+    
     public void caricaFile(String file) throws IOException {
 
         FileWriter myWriter = new FileWriter("fileImpostazioni.txt");

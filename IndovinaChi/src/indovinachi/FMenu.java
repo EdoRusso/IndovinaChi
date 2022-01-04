@@ -40,12 +40,12 @@ public class FMenu extends JFrame {
     private final JLabel esci;
     private Image img;
     private JLabel labelLogo;
-
+    private boolean turnoIniziale;
     public FMenu(Condivisa cond) throws HeadlessException, IOException {
         System.out.println("FMenu: Dentro al menu");
-
+        System.out.println(cond.getWidth()+" "+cond.getHeight());
+        turnoIniziale=false;
         this.cond = cond;
-
         fImpostazioni = new FImpostazioni(cond);
         cond.setMenu(this);
 
@@ -76,7 +76,7 @@ public class FMenu extends JFrame {
 
         //Label creazione gioca
         gioca = new JLabel();
-
+        
         gioca.setBounds((cond.getWidth() / 2) - 300, (int) (cond.getHeight() / 3.52), 600, 200);
         //gioca.setHorizontalAlignment(gioca.CENTER);
         img = ImageIO.read(getClass().getResource("Bottoni/play.png"));
@@ -92,7 +92,9 @@ public class FMenu extends JFrame {
 
                     fGioco = new FSchermataGioco(cond);
                     fGioco.setVisible(true);
+                    turnoIniziale=true;
                     cond.getMenu().setVisible(false);
+                    cond.getInviaRicevi().invia("c;"+cond.getNomeUtente()+";"+cond.getTempo()+";"+cond.getTentativi()+";");
                     
                 } catch (HeadlessException | IOException ex) {
                     Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,4 +155,9 @@ public class FMenu extends JFrame {
         this.setVisible(true);
 
     }
+
+    public boolean isTurnoIniziale() {
+        return turnoIniziale;
+    }
+    
 }
