@@ -45,7 +45,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
     JButton inviaMessaggio;
     boolean turno;
     String nomePersonaggioUtente;
-    
+    String nomePersonaggioAvversario;
     JLabel nomeAvversario;
     JLabel nomeUtente;
     JLabel nTentativiUtente;
@@ -64,7 +64,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         cond.setGioco(this);
         System.out.println("FSchermataGioco: Dentro gioco");
         this.setTitle("Gioco - Indovina chi");
-
+        nomePersonaggioAvversario = "avversario";
         //Elimina i bordi della finestra
         setUndecorated(true);
         //Imposto la finestra al massimo
@@ -88,11 +88,9 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         //personaggio.setBounds((int) (cond.getWidth() / 2) - (int) (cond.getWidth() / 19.36) / 2, ((int) (cond.getHeight() / 1.47)) + 100, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         personaggio.setBounds((int) (cond.getWidth() / 2) - (int) (cond.getWidth() / 19.36) / 2, (int) (cond.getHeight() / 42.24) - 5, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         personaggio.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
-        nomePersonaggioUtente=cond.persona[random].getNome();
+        nomePersonaggioUtente = cond.persona[random].getNome();
         this.add(personaggio);
-        
-        
-        
+
         //Bottone passaTurno
         passaTurno = new JButton();
         img = ImageIO.read(getClass().getResource("Bottoni/round.jpg"));
@@ -148,7 +146,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         this.add(nomeUtente);
 
         //label nome avversario
-        nomeAvversario = new JLabel("avversario");
+        nomeAvversario = new JLabel(nomePersonaggioAvversario);
         nomeAvversario.setHorizontalAlignment(nomeAvversario.CENTER);
         nomeAvversario.setBounds((int) (cond.getWidth() / 12.49), (int) (cond.getHeight() / 10.56), 415, 30);
         nomeAvversario.setFont(new Font("Bungee Regular", Font.BOLD, 24));
@@ -236,7 +234,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
         this.add(arrayBottoni[i]);
         arrayBottoni[i].addActionListener(this);
     }
-   
+
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("FSchermata:------------------------------------------" + turno);
@@ -244,6 +242,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
             if (e.getSource() == passaTurno) {
                 System.out.println("FSchermataGioco: Passa Turno");
                 turno = false;
+                String stringaEliminati="";
                 for (int i = 0; i < arrayBottoni.length; i++) {
                     if (cond.persona[i].isAttivo()) {
                         {
@@ -252,6 +251,7 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
                                 img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
                                 arrayBottoni[i].setIcon(new ImageIcon(img));
                                 cond.persona[i].setEliminato(true);
+                                stringaEliminati+=i+";";
                                 System.out.println("FSchermataGioco: " + cond.persona[i].getNome());
                                 this.repaint();
                             } catch (IOException ex) {
@@ -263,8 +263,18 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
                     }
 
                 }
+                try {
+                    cond.inviaRicevi.invia("f;"+stringaEliminati);
+                } catch (IOException ex) {
+                    Logger.getLogger(FSchermataGioco.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else if (e.getSource() == arrenditi) {
                 System.out.println("FSchermataGioco: Arrenditi");
+                try {
+                    cond.inviaRicevi.invia("e;a;");
+                } catch (IOException ex) {
+                    Logger.getLogger(FSchermataGioco.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 this.dispose();
                 cond.getMenu().setVisible(true);
                 cond.setInizio();
@@ -272,11 +282,20 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
                 //invia("e;r;")
             } else if (e.getSource() == tenta) {
                 System.out.println("FSchermataGioco: Tenta");
-                if (tentativi> 0) {
+                if (tentativi > 0) {
+                    //invia comando t + nome del tentativo
+                    try {
+
+                        cond.inviaRicevi.invia("t;" + this.inviaMessaggio.getText() + ";");
+                    } catch (IOException ex) {
+                        Logger.getLogger(FSchermataGioco.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    this.chat.append("<" + nomeUtente + "> " + "Ha tentato con: " + this.messaggio.getText());
+                    messaggio.setText("");
                     tentativi--;
                     nTentativiUtente.setText(tentativi + "/" + cond.getTentativi());
-                }else if(tentativi==0 && !(cond.getTentativi()==0)){
-                //invia();
+                } else if (tentativi == 0 && !(cond.getTentativi() == 0)) {
+
                     System.out.println("FShcermataGioco: tenativi finiti");
                 }
                 //invia("t;"+messaggio.getText()+";");
@@ -284,7 +303,13 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
                 //messaggioBool=true;
             } else if (e.getSource() == inviaMessaggio) {
                 chat.append("<" + cond.getNomeUtente() + "> " + messaggio.getText() + "\n");
+                try {
+                    cond.inviaRicevi.invia("d;" + messaggio.getText() + ";");
+                } catch (IOException ex) {
+                    Logger.getLogger(FSchermataGioco.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 messaggio.setText("");
+
                 //messaggioBool=true;
             } else {
                 for (int i = 0; i < arrayBottoni.length; i++) {
@@ -323,19 +348,39 @@ public final class FSchermataGioco extends JFrame implements ActionListener {
 
         }
     }
-     public void setTurno(){
-        this.turno=!turno;
+
+    public void setTurno() {
+        this.turno = !turno;
     }
-    public void setPedinaAvversario(int i) throws IOException{
+
+    public void setPedinaAvversario(int i) throws IOException {
         img = ImageIO.read(getClass().getResource("Bottoni/sagomaX.png"));
         img = Condivisa.resizeImage((BufferedImage) img, 1, (int) (cond.getWidth() / 19.36), (int) (cond.getHeight() / 8.448));
         arrayLabel[i].setIcon(new ImageIcon(img));
     }
-    public String getNomePersonaggio(){
+
+    public String getNomePersonaggio() {
         return nomePersonaggioUtente;
     }
-    public void setTentativiAvversario(){
+
+    public void setTentativiAvversario() {
         tentativiAvversario--;
     }
-    
+
+    public JTextArea getChat() {
+        return chat;
+    }
+
+    public int getTentativi() {
+        return tentativi;
+    }
+
+    public int getTentativiAvversario() {
+        return tentativiAvversario;
+    }
+
+    public void setNomePersonaggioAvversario(String nomePersonaggioAvversario) {
+        this.nomePersonaggioAvversario = nomePersonaggioAvversario;
+    }
+
 }

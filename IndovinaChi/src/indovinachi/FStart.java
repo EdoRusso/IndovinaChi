@@ -31,6 +31,7 @@ public class FStart extends JFrame {
     private static FMenu menu;
     private int width;
     private int height;
+    private InviaRiceviThread inviaRicevi;
 
     public static void main(String[] args) throws HeadlessException, IOException {
 
@@ -43,7 +44,8 @@ public class FStart extends JFrame {
         System.out.println("FStart: Dentro start");
 
         this.setTitle("Start - Indovina chi");
-
+        inviaRicevi = new InviaRiceviThread(cond);
+        cond.setInviaRicevi(inviaRicevi);
         //Elimina i bordi
         setUndecorated(true);
         //Imposto la finestra al massimo
@@ -59,7 +61,6 @@ public class FStart extends JFrame {
 
         //Imposto la finestra non ridimensionabile
         this.setMinimumSize(new Dimension(width, height));
-        System.out.println("FStart: Frame Size = " + this.getSize());
 
         //Dati relativi alla lunghezza e larghezza dello schermo
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
@@ -89,7 +90,7 @@ public class FStart extends JFrame {
                     cond.leggiFile();
                     menu = new FMenu(cond);
                     cond.setMenu(menu);
-                    menu.setVisible(true);              
+                    menu.setVisible(true);
                     cond.getStart().setVisible(false);
                 } catch (HeadlessException | IOException ex) {
                     Logger.getLogger(FStart.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,6 +102,5 @@ public class FStart extends JFrame {
         this.setVisible(true);
 
     }
-
 
 }

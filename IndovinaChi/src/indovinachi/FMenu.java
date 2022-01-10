@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 
@@ -41,14 +42,16 @@ public class FMenu extends JFrame {
     private Image img;
     private JLabel labelLogo;
     private boolean turnoIniziale;
+    private boolean controlloEntrata;
+
     public FMenu(Condivisa cond) throws HeadlessException, IOException {
         System.out.println("FMenu: Dentro al menu");
-        System.out.println(cond.getWidth()+" "+cond.getHeight());
-        turnoIniziale=false;
+        System.out.println(cond.getWidth() + " " + cond.getHeight());
+        turnoIniziale = false;
         this.cond = cond;
         fImpostazioni = new FImpostazioni(cond);
         cond.setMenu(this);
-
+        controlloEntrata = false;
         // x-> 1936 y-> 1056
         //Label Lx->600 Ly->200
         // Bottone dimensione 100 125
@@ -76,7 +79,7 @@ public class FMenu extends JFrame {
 
         //Label creazione gioca
         gioca = new JLabel();
-        
+
         gioca.setBounds((cond.getWidth() / 2) - 300, (int) (cond.getHeight() / 3.52), 600, 200);
         //gioca.setHorizontalAlignment(gioca.CENTER);
         img = ImageIO.read(getClass().getResource("Bottoni/play.png"));
@@ -89,17 +92,20 @@ public class FMenu extends JFrame {
 
                 System.out.println("FMenu: Gioca");
                 try {
-
                     fGioco = new FSchermataGioco(cond);
                     fGioco.setVisible(true);
-                    turnoIniziale=true;
+                    turnoIniziale = true;
                     cond.getMenu().setVisible(false);
-                    cond.getInviaRicevi().invia("c;"+cond.getNomeUtente()+";"+cond.getTempo()+";"+cond.getTentativi()+";");
+                    String ipDestinatario = (String) JOptionPane.showInputDialog(null, "Ip destinatario", "Menu - Ip destinatario", JOptionPane.PLAIN_MESSAGE);
+                    cond.getInviaRicevi().setIpDestinatarioConnesso(ipDestinatario);
+                    System.out.println("FMenu "+ipDestinatario);
+                    String inizioGioco = "c;" + cond.getNomeUtente() + ";" + cond.getTempo() + ";" + cond.getTentativi() + ";";
+                    cond.getInviaRicevi().invia(inizioGioco);
+                    System.out.println("Menu "+inizioGioco);
                     
                 } catch (HeadlessException | IOException ex) {
                     Logger.getLogger(FMenu.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("FMenu: E dai");
+                }              
             }
         });
 
@@ -119,7 +125,7 @@ public class FMenu extends JFrame {
                 try {
 
                     if (!fImpostazioni.isVisible()) {
-                        fImpostazioni.setVisible(true);                      
+                        fImpostazioni.setVisible(true);
                         System.out.println("fImpostazioni " + fImpostazioni.isVisible());
                     }
 
@@ -159,5 +165,5 @@ public class FMenu extends JFrame {
     public boolean isTurnoIniziale() {
         return turnoIniziale;
     }
-    
+
 }
